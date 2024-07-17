@@ -1,6 +1,7 @@
 # Judicial Knoweldge Graph
 
-Build a KG from textual legal documents in environmental contamination domain.
+Build a KG from textual legal documents in environmental contamination domain with this schema:
+![KG Schema](imgs/Octavial_KG_schema.png)
 
 ## How to run
 
