@@ -3,6 +3,7 @@ import json
 import time
 from typing import List, Dict
 from openai import OpenAI
+from tenacity import retry, wait_exponential, stop_after_attempt
 from src.utils import LoggingHandler
 
 
@@ -20,6 +21,7 @@ class OpenAIQuery(LoggingHandler):
             self.log.error(f"Path {prompt_path} should be a directory.")
         self.messages = self.build_prompt(prompt_path, prompt_version)
 
+    @retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1, min=1, max=8))
     def query(self, query: str, model: str) -> dict:
         prompt = [{"role": "system", "content": self.messages['task']},
                   {"role": "user", "content": self.messages['example']},

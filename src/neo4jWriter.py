@@ -1,6 +1,7 @@
 import os
 from typing import List, Dict
 from neo4j import GraphDatabase, basic_auth
+from tenacity import retry, wait_exponential, stop_after_attempt
 from src.utils import LoggingHandler
 
 
@@ -26,6 +27,7 @@ class Neo4jWriter(LoggingHandler):
     def close(self):
         self.driver.close()
 
+    @retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1, min=1, max=8))
     def run_simple_query(self, query: str, data: dict = None, db: str = None) -> List[Dict]:
         """
         Execute simple read or write (can contain payload in `data` parameter) query.
@@ -40,6 +42,7 @@ class Neo4jWriter(LoggingHandler):
             self.log.debug(result)
         return result
 
+    @retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1, min=1, max=8))
     def run_multi_queries(self, queries: list, db: str = None) -> List[List[Dict]]:
         results = list()
         with self.driver.session(database=self.db if db is None else db) as session:
