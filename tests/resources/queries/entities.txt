@@ -1,0 +1,18 @@
+
+MATCH (n)
+WHERE elementId(n) = $element_id
+SET n:LLMProcessed,
+n.LLM_metadata_entities = '{"LLMMetadataEntities":' + apoc.convert.toJson($entities) + "}",
+n.content_type_llm = $content_type
+
+WITH n
+
+UNWIND $entities AS ent
+
+CREATE (e:Entity)
+SET e += ent,
+e._all_properties = ent._all_properties //apoc.convert.toJson(ent)
+
+WITH n, e
+
+MERGE (n)-[r:MENTIONS_ENTITY]->(e)

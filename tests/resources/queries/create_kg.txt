@@ -1,0 +1,42 @@
+MATCH (p:File)-[:MENTIONS_ENTITY]->(e1:Entity)-[r:RELATED_TO_ENTITY]->(e2)
+WITH p, e1, r, e2
+
+UNWIND $schema AS kg_rel
+
+WITH p, e1, r, e2, e1._label_llm AS label1, r._type_llm AS relation, e2._label_llm AS label2, kg_rel
+WHERE label1 = kg_rel[0] AND label2 = kg_rel[2] AND relation = kg_rel[1]
+
+// handle case when schema contains the same relation multiple times
+WITH DISTINCT p, e1, r, e2, label1, relation, label2
+
+// source node in KG-layer
+CALL apoc.merge.node([label1,"KGEntity"], {name_normalized: toLower(e1.name)}, {name: e1.name}) YIELD node AS n1
+SET n1 += apoc.convert.fromJsonMap(e1._all_properties)
+WITH p, e1, r, e2, label1, relation, label2, n1
+CALL apoc.merge.relationship(e1, "MAPPED_TO", {}, {}, n1) YIELD rel
+CALL apoc.merge.relationship(p, "MENTIONS_" + toUpper(label1), {}, {}, n1) YIELD rel AS rel2
+WITH p, e1, r, e2, label1, relation, label2, n1
+
+// target node in KG-layer
+CALL apoc.merge.node([label2,"KGEntity"], {name_normalized: toLower(e2.name)}, {name: e2.name}) YIELD node AS n2
+SET n2 += apoc.convert.fromJsonMap(e2._all_properties)
+WITH p, e1, r, e2, label1, relation, label2, n1, n2
+CALL apoc.merge.relationship(e2, "MAPPED_TO", {}, {}, n2) YIELD rel
+CALL apoc.merge.relationship(p, "MENTIONS_" + toUpper(label2), {}, {}, n2) YIELD rel AS rel2
+WITH p, e1, r, e2, label1, relation, label2, n1, n2
+
+// relationship in KG-layer
+CALL apoc.merge.relationship(n1, relation, {}, {count: 0}, n2) YIELD rel
+SET rel.count = rel.count + 1,
+    rel += apoc.convert.fromJsonMap(r._all_properties)
+WITH p, e1, r, e2, label1, relation, label2, n1, n2, rel
+
+// create relation-explainability node & edges
+CREATE (ex:ExplainRelation {rel_type: relation, source: e1.name, target: e2.name})
+CREATE (p)<-[:_FROM_DOC]-(ex)
+//CREATE (ex)-[:_MENTION_SOURCE]->(e1)
+//CREATE (ex)-[:_MENTION_TARGET]->(e2)
+CREATE (ex)<-[:_EXPLAINED_BY]-(n1)
+CREATE (ex)<-[:_EXPLAINED_BY]-(n2)
+
+RETURN count(distinct rel) AS n_rels

@@ -1,0 +1,18 @@
+5/24/2019 Molecular impacts of perfluorinated chemicals (PFASs) in the liver and testis of male largemouth bass (Micropterus salmoides) in Minnes…
+PubMed
+
+Format: Abstract          Full text links
+Comp Biochem Physiol Part D Genomics Proteomics. 2016 Sep;19:129-139. doi: 10.1016/j.cbd.2016.02.001. Epub 2016
+Feb 6.
+Collí-Dulá RC1, Martyniuk CJ1
+  Author information
+
+Abstract
+Perfluorinated chemicals (PFASs) have been detected in the upper Midwest and the state of Minnesota in the USA. We hypothesized
+that fish with high levels of PFASs in the Twin Cities Metro Areas would show adverse effects, such as oxidative
+and general stress. The lowest concentrations of PFASs were found in largemouth bass from Steiger and Upper Prior Lakes
+and the highest concentrations found in fish from Calhoun and Twin Lakes. Largemouth bass with high PFAS exhibited changes
+in the expression of genes related to lipid metabolism and RNA processing. However, it is unlikely that PFASs are the only
+stressors. Twin Lake is affected by the Joslyn superfund site which contains polycyclic aromatic hydrocarbons and pentachlorophenol.
+These compounds are also expected to drive the transcriptomics responses observed, but to what degree is difficult
+to ascertain at this time.

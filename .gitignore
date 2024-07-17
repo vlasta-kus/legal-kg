@@ -1,0 +1,6 @@
+.env
+.venv/
+.idea/
+tests/data/
+src/__pycache__/
+tests/__pycache__/

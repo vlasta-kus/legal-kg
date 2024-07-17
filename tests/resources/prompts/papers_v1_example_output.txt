@@ -1,0 +1,15 @@
+{"entities":{"Issue":[{"id":0,"name":"perfluorinated chemicals in fish","date":"2016-02-06","exposure_or_level":"high","risk":"unknown"},{"id":1,"name":"contaminants in Twin Lake","date":"2016-02-06","exposure_or_level":"unknown","risk":"unknown"}],
+"Substance":[{"id":2,"name":"perfluorinated chemicals","known_as":"PFASs","wikipedia_id":"Per-_and_polyfluoroalkyl_substances"},{"id":3,"name":"polycyclic aromatic hydrocarbons","wikipedia_id":"Polycyclic_aromatic_hydrocarbon"},{"id":4,"name":"pentachlorophenol","wikipedia_id":"Pentachlorophenol"}],
+"Animal":[{"id":5,"name":"largemouth bass","known_as":"Micropterus salmoides","type":"fish","wikipedia_id":"Largemouth_bass"}],
+"Person":[{"id":6,"name":"Collí-Dulá RC"},{"id":,"name":"Martyniuk CJ"}],
+"Location":[{"id":7,"name":"Minnesota","wikipedia_id":"Minnesota"},{"id":8,"name":"Upper Midwest","wikipedia_id":"Upper_Midwest"},{"id":9,"name":"United States of America","wikipedia_id":"United_States"},{"id":10,"name":"Twin Cities","wikipedia_id":"Minneapolis–Saint_Paul"},{"id":11,"name":"Steiger Lake","wikipedia_id":"Stieger_Lake"},{"id":12,"name":"Upper Prior Lake","wikipedia_id":"Prior_Lake,_Minnesota"},{"id":13,"name":"Calhoun Lake","wikipedia_id":"Bde_Maka_Ska"},{"id":14,"name":"Twin Lakes"}],
+"HealthFactor":[{"id":15,"name":"gene expression","wikipedia_id":"Gene_expression"},{"id":16,"name":"lipid metabolism","wikipedia_id":"Lipid_metabolism"},{"id":17,"name":"RNA processing","wikipedia_id":"Lipid_metabolism"}],
+"Facility":[{"id":18,"name":"Joslyn superfund site"}]
+},
+"relations":{"ABOUT":[{"source":0,"target":2},{"source":0,"target":15},{"source":0,"target":16},{"source":0,"target":17},{"source":0,"target":5},{"source":1,"target":3},{"source":1,"target":4},{"source":1,"target":5}],
+"IMPACTS":[{"source":0,"target":10},{"source":0,"target":11,"exposure_or_level":"low"},{"source":0,"target":12,"exposure_or_level":"low"},{"source":0,"target":13,"exposure_or_level":"high"},{"source":0,"target":14,"exposure_or_level":"high"},{"source":0,"target":14}],
+"DETECTED_IN":[{"source":2,"target":7},{"source":2,"target":8}],
+"LOCATED_IN":[{"source":7,"target":8},{"source":7,"target":9},{"source":9,"target":9},{"source":10,"target":7},{"source":9,"target":10},{"source":11,"target":10},{"source":12,"target":10},{"source":13,"target":10},{"source":14,"target":10},{"source":18,"target":10}],
+"FOUND_IN":[{"source":2,"target":5,"exposure_or_level":"high"}],
+"CAUSES":[{"source":2,"target":15},{"source":2,"target":16},{"source":2,"target":17}],
+"ORIGIN_OF":[{"source":18,"target":1}]}}

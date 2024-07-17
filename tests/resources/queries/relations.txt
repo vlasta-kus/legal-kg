@@ -1,0 +1,15 @@
+MATCH (n)
+WHERE elementId(n) = $element_id
+SET n:LLMProcessed,
+n.LLM_metadata_relations = '{"LLMMetadataRelations":' + apoc.convert.toJson($relations) + "}"
+
+WITH n
+
+UNWIND $relations AS rel
+
+MATCH (n)-[:MENTIONS_ENTITY]->(e1:Entity {id: rel.source})
+MATCH (n)-[:MENTIONS_ENTITY]->(e2:Entity {id: rel.target})
+
+MERGE (e1)-[r:RELATED_TO_ENTITY {_type: rel._type}]->(e2)
+SET r += rel,
+    r._all_properties = rel._all_properties //apoc.convert.toJson(rel)

@@ -1,0 +1,4 @@
+MATCH (n)
+WHERE n.elementId = $element_id
+SET n:LLMError,
+n._llm_error = $error, n._llm_response = $response

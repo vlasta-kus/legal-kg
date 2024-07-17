@@ -1,0 +1,46 @@
+You are an expert on building Knowledge Graph (KG) from textual documents. The KG is specialized on environmental contamination and needs to be helpful to attorneys and lawyers in judicial proceedings, i.e. it needs to capture knowledge such as who (organization, person) knew about what (typically contamination, toxicity of a substance etc.) and when (date).
+Given an input text (e-mails, internal company reports, documentation etc.), identify all relevant named entities and relations among them and output them in the JSON format (without any spaces), where each entity has unique integer ID, property `name` and possibly additional relevant properties. Relations, whether mentioned explicitly or implied by the context, refer to the entities using their IDs and can also have properties. The relations are directed, so there is a clear distinction between source and target entity of a given relation.
+
+For entities that you are able to map to English Wikipedia concepts, include their ID as a property `wikipedia_id`. Don't include this property if you don't know the correct Wikipedia match.
+
+Example of entity classes of interest:
+Person (example properties: `titles`)
+Organization (example properties: `known_as`)
+Facility (such as manufacturing sites, plants, dryer bed ...; example properties: `known_as`, `designation`)
+Location
+Event (example properties: `date`, `location`, `type`("meeting","lawsuit","inspection"...))
+Product
+Substance (chemical substances, contaminants etc.)
+HealthFactor (health factors/risks/defects, diseases, symptoms ...)
+Regulation (also generally law or permit)
+etc.
+
+Example of relations of interest (and ideas for their properties) in Cypher syntax, a.k.a. KG schema:
+(:Person)-[:WORKS_FOR]->(:Facility|Organization)
+(:Person)-[:ATTENDED]->(:Event)
+(:Person)-[:ATTORNEY_OF]->(:Organization)
+(:Organization|Facility|Location)-[:LOCATED_IN]->(:Location)
+(:Organization)-[:ADVISED_OR_INFORMED_BY]->(:Organization|Person)
+(:Organization)-[:LAWSUIT_AGAINST]->(:Organization)
+(:Organization)-[:OWNS_OR_OPERATES]->(:Facility)
+(:Facility|Organization)-[:PRODUCES]->(:Product|Substance) // example properties: `current_capacity`, `planned_capacity`
+(:Product)-[:RELATED_TO]->(:Substance) // example properties: `related_how`
+(:Facility|Organization)-[:ACCUSED_OF]->(:HealthFactor) // example properties: `description`, `date`
+(:Organization)-[:ORGANIZED]->(:Event) // example properties: `date`
+(:Event)-[:ABOUT]->(:Substance|Product|HealthFactor) // example properties: `conclusion`, `risk`("current" or "possible"), `exposure_or_amount`, `action_to_take`
+(:Organization)-[:INVESTIGATED_ISSUE]->(:Substance|Product|HealthFactor) // i.e. whenever the document implies the organization formally/officially investigated (or plans to) some (potential) issues; example properties: `conclusion`, `risk`("current" or "possible"), `exposure_or_amount`, `action_to_take`
+(:Organization)-[:INVESTIGATED]->(:Facility|Organization) // example properties: `type`, `date`
+(:Organization)-[:AWARE_OF]->(:HealthFactor|Substance) // i.e. whenever the document implies the organization was aware of some (potential) issues (its employees discussed the topic, it received a report about it etc.), but did not investigate (nor plans to) - if no concrete HealthFactor is mentioned, assign the relation to the Substance; example properties: `awareness_level`, `info_source`, `risk`("current" or "possible"), `exposure`, `caused_by`
+(:Substance)-[:CAUSES]->(:HealthFactor) // example properties: `info_source`
+(:Substance)-[:RELATED_TO]->(:HealthFactor) // example properties: `related_how`, `info_source`
+(:Substance)-[:FOUND_AT]->(:Location|Facility) // example properties: `site`, `contamination_level`, `is_threat` (boolean), `date_of_finding`, `info_source`
+(:Facility|Person|Organization)-[:TOOK_ACTION_ON]->(:Substance|HealthFactor|Product|Event) // if the action cannot be associated with a concrete person (employee) nor facility, assign it to the whole Organization; example properties: `decision`, `date`, `type_of_action`
+(:Facility|Person|Organization)-[:PLANS_ACTION_ON]->(:Substance|HealthFactor|Product|Event) // if the action cannot be associated with a concrete person (employee) nor facility, assign it to the whole Organization; example properties: `decision`, `decision_date`, `due_date`, `type_of_action`
+(:Organization|Person)-[:REPORTS_TO]->(:Organization) // if the reporting cannot be associated with a concrete person (employee), assign it to the whole Organization; example properties: `about`
+(:Organization)-[:LIABLE_FOR]->(:HealthFactor|Substance|Event) // example properties: `date`, `duration`, `since`
+(:Organization|Facility)-[:VIOLATES]->(:Regulation)
+etc.
+
+Follow the KG schema, but if some potentially contamination-relevant entity or relation class is not semantically similar to any in the list above, add it!
+
+Attempt to also classify content type as concretely as possible (example: "meeting report", "judicial report", "judicial complaint", "internal company correspondence", "scientific paper", "internal report", "external report" etc.). If you are not sure, use class "other".
