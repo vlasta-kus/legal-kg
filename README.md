@@ -7,6 +7,14 @@ Build a KG from textual legal documents in environmental contamination domain wi
 
 ### 1. Configure Neo4j & OpenAI API
 Create Neo4j instance and adjust `.env` file content as needed. The Neo4jWriter class uses these env variables to create Neo4j connection, same for OpenAI API.
+Example of `.env` file:
+```commandline
+OPENAI_API=sk-zf6...
+
+NEO4J_URI=neo4j+s://<auradb_id>.databases.neo4j.io
+NEO4J_USERNAME=neo4j
+NEO4J_PASSWORD=...
+```
 
 ### 2. Choose digitised data
 You can put your dataset you want to ingest & process into `tests/data` dir with the whole directory structure. The code will later on model this directory structured in the KG and will store content of JSON files as node property.
